@@ -15,8 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
-import org.hibernate.validator.constraints.Range;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 import com.adrian.alkemyChallenge.serializer.GenreSerializer;
 import com.adrian.alkemyChallenge.serializer.ZonedDateTimeSerializer;
@@ -45,7 +45,8 @@ public class Movie implements Serializable{
 	@JsonProperty("date_created")
 	private ZonedDateTime dateCreated;
 	
-	@Range(min=1,max=5)
+	@Min(value = 1)
+	@Max(value= 5)
 	private int qualification;
 	
 	
@@ -135,16 +136,5 @@ public class Movie implements Serializable{
 	public void setGenre(Set<Genre> genre) {
 		this.genre = genre;
 	}
-	
-	
 
-	
-
-	
-
-	
-	
-	
-	
-	
 }
