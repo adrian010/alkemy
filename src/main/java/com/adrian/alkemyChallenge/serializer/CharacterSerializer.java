@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class CharacterSerializer extends StdSerializer<Set<Character>> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public CharacterSerializer(){
 		this(null);
 	}

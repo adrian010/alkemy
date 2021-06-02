@@ -17,12 +17,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.adrian.alkemyChallenge.apiError.ApiError;
 import com.adrian.alkemyChallenge.dto.MovieDTO;
+import com.adrian.alkemyChallenge.model.Character;
+import com.adrian.alkemyChallenge.model.Genre;
 import com.adrian.alkemyChallenge.model.Movie;
+import com.adrian.alkemyChallenge.service.ICharacterService;
+import com.adrian.alkemyChallenge.service.IGenreService;
 import com.adrian.alkemyChallenge.service.IMovieService;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/movies")
@@ -32,17 +40,57 @@ public class MovieController {
 	@Autowired
 	private IMovieService movieService;
 	
-	@PostMapping
+	@Autowired
+	private ICharacterService characterService;
+	
+	@Autowired
+	private IGenreService genreService;
+	
+	
+	
+	@ApiOperation(value = "Crear una pelicula", response = Movie.class)
+	@ApiResponses(value = {
+			 @ApiResponse(code = 201, message = "Pelicula creada correctamente"),
+			 @ApiResponse(code = 400, message = "Id de Personaje o de Genero no existe"),
+			 })
+	@PostMapping	
 	public ResponseEntity<?> create(@Valid @RequestBody Movie movie){
+	
+		for (Character character : movie.getCharacters()) {
+			Optional<Character> charac = characterService.findById(character.getId());
+			
+			if(!charac.isPresent()) {
+				
+				ApiError apiError = new ApiError(String.format("id:%s on Character not found", character.getId()),HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST); 
+				
+				return new ResponseEntity<>(apiError,apiError.getStatus());
+			}
+		}
+	
+		for (Genre genre : movie.getGenre()) {
+			Optional<Genre> gen = genreService.findById(genre.getId());
+			
+			if(!gen.isPresent()) {
+				
+				ApiError apiError = new ApiError(String.format("id:%s on Genre not found", genre.getId()),HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST); 
+				
+				return new ResponseEntity<>(apiError,apiError.getStatus());
+			}
+		}
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(movieService.save(movie));
 	}
 	
 	// Read 
+	@ApiOperation(value = "Obtener una pelicula", response = Movie.class)
 	@GetMapping("/{id}")
 	public ResponseEntity<?> read(@PathVariable(value = "id") Long movieId){
 		Optional<Movie> oMovie = movieService.findById(movieId);
-		if(!oMovie.isPresent()) {
-			return ResponseEntity.notFound().build();
+		if(!oMovie.isPresent()) {		
+			
+			ApiError apiError = new ApiError(String.format("id:%s on Movie not found", movieId),HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND); 
+			
+			return new ResponseEntity<>(apiError,apiError.getStatus());
 		}
 			
 		return ResponseEntity.ok(oMovie);
@@ -54,15 +102,44 @@ public class MovieController {
 		Optional<Movie> movie = movieService.findById(movieId);
 		
 		if(!movie.isPresent()) {
-			return ResponseEntity.notFound().build();			
+			
+			ApiError apiError = new ApiError(String.format("id:%s on Movie not found", movieId),HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND); 
+			
+			return new ResponseEntity<>(apiError,apiError.getStatus());		
 		}
-		
 		movie.get().setImage(movieDetails.getImage());
 		movie.get().setTitle(movieDetails.getTitle());
 		movie.get().setDateCreated(movieDetails.getDateCreated());
 		movie.get().setQualification(movieDetails.getQualification());
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(movieService.save(movie.get()));			
+		for (Character character : movie.get().getCharacters()) {
+			Optional<Character> charac = characterService.findById(character.getId());
+			
+			if(!charac.isPresent()) {
+				
+				ApiError apiError = new ApiError(String.format("id:%s on Character not found", character.getId()),HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST); 
+				
+				return new ResponseEntity<>(apiError,apiError.getStatus());
+				
+			}
+		}
+		
+		for (Genre genre : movie.get().getGenre()) {
+			Optional<Genre> gen = genreService.findById(genre.getId());
+			
+			if(!gen.isPresent()) {
+				
+				ApiError apiError = new ApiError(String.format("id:%s on Genre not found", genre.getId()),HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST); 
+				
+				return new ResponseEntity<>(apiError,apiError.getStatus());
+			}
+		}
+		
+		
+		movie.get().setCharacters(movieDetails.getCharacters());		
+		movie.get().setGenre(movieDetails.getGenre());
+		
+		return ResponseEntity.status(HttpStatus.OK).body(movieService.save(movie.get()));			
 	}
 	
 	// Delete 
@@ -72,20 +149,21 @@ public class MovieController {
 		Optional<Movie> movie = movieService.findById(movieId);
 		
 		if(!movie.isPresent()) {
-			return ResponseEntity.notFound().build();			
+			
+			ApiError apiError = new ApiError(String.format("id:%s on Movie not found", movieId),HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND); 
+			
+			return new ResponseEntity<>(apiError,apiError.getStatus());				
 		}
 		
 		movie.get().getCharacters().forEach(character ->{
 			character.getMovies().remove(movie.get());
 		});
 		
-		
-		
 		movieService.deleteById(movieId);
 		return ResponseEntity.ok().build();
 	}
 		
-	// Read all Users
+	//find all
 	@GetMapping
 	public List<MovieDTO> readAll(){
 		List<MovieDTO> movie = movieService.findAll();
@@ -93,17 +171,18 @@ public class MovieController {
 		return movie;
 	}
 	
-	
+	//find by title
+	@ApiOperation(value = "Buscar una pelicula por titulo", response = Movie.class)
 	@GetMapping(params = "title")
-	@ResponseBody
-	public List<MovieDTO> findByTitulo(@RequestParam String title){
+	public List<MovieDTO> findByTitle(@RequestParam String title){
 		
 		
 		return movieService.findByTitle(title);
 	}
 	
+	
+	
 	@GetMapping(params = "order")
-	@ResponseBody
 	public ResponseEntity<?> findAllOrderByDateCreated(@RequestParam String order){
 		
 		List<MovieDTO> movies = new ArrayList<>();		
@@ -115,11 +194,13 @@ public class MovieController {
 			movies = movieService.findAllByOrderByDateCreatedDesc();		
 		}
 		else {			
-			return ResponseEntity.badRequest().build();
+			
+			ApiError apiError = new ApiError(String.format("order: %s invalid. try ASC or DESC ", order),HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST); 
+			
+			return new ResponseEntity<>(apiError,apiError.getStatus());
+			
 		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body(movies);
-	}
-		
-		
+	}	
 }

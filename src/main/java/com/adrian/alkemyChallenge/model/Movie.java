@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,10 +17,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import com.adrian.alkemyChallenge.serializer.GenreSerializer;
-import com.adrian.alkemyChallenge.serializer.ZonedDateTimeSerializer;
 import com.adrian.alkemyChallenge.deserializer.ZonedDateTimeDeserializer;
 import com.adrian.alkemyChallenge.serializer.CharacterSerializer;
+import com.adrian.alkemyChallenge.serializer.GenreSerializer;
+import com.adrian.alkemyChallenge.serializer.ZonedDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -31,6 +30,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Table(name = "movies")
 public class Movie implements Serializable{
 
+	public Movie(String image, String title, ZonedDateTime dateCreated, @Min(1) @Max(5) int qualification,
+			Set<Character> characters, Set<Genre> genre) {
+		super();
+		this.image = image;
+		this.title = title;
+		this.dateCreated = dateCreated;
+		this.qualification = qualification;
+		this.characters = characters;
+		this.genre = genre;
+	}
+
+	public Movie() {}
+	
 	private static final long serialVersionUID = 6361680335920572326L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +62,7 @@ public class Movie implements Serializable{
 	private int qualification;
 	
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="movie_character"
 			,joinColumns = {@JoinColumn(name="movie_id")}
 			,inverseJoinColumns = {@JoinColumn(name="character_id")}
@@ -59,7 +71,7 @@ public class Movie implements Serializable{
 	private Set<Character> characters= new HashSet<>();
 	
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="movie_genre"
 			,joinColumns = {@JoinColumn(name="movie_id")}
 			,inverseJoinColumns = {@JoinColumn(name="genre_id")}

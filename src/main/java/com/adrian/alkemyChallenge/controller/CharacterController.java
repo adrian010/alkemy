@@ -61,7 +61,7 @@ public class CharacterController {
 		character.get().setHeight(characterDetails.getHeight());
 		character.get().setHistory(characterDetails.getHistory());
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(characterService.save(character.get()));			
+		return ResponseEntity.status(HttpStatus.OK).body(characterService.save(character.get()));			
 	}
 	
 	// Delete 

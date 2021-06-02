@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class MovieSerializer extends StdSerializer<Set<Movie>> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public MovieSerializer(){
 		this(null);
 	}

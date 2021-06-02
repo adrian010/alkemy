@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,7 +36,7 @@ public class Character implements Serializable{
 	private String history;
 	
 	
-	@ManyToMany(mappedBy = "characters", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "characters", fetch = FetchType.EAGER)
 	@JsonSerialize(using= MovieSerializer.class)
 	private Set<Movie> movies=new HashSet<>();
 

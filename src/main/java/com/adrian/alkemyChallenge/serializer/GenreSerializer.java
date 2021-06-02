@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class GenreSerializer extends StdSerializer<Set<Genre>>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public GenreSerializer(){
 		this(null);
 	}
