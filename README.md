@@ -54,9 +54,10 @@ App Documentation:
     "height": 230.0,
     "history": "Personaje X"
     }
+Create a Genre:
 
-- Create a Genre:
-  Req method: POST
+Req method: POST
+
   localhost:8080/genre
   body:
   {  
