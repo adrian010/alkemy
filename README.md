@@ -41,8 +41,63 @@ The app will start running at <http://localhost:8080>.
 
 ## Explore Rest APIs
 
-App Documentation with Swagger
+## App Documentation: 
 
+### Create a character:  
+
+Req method: POST   
+localhost:8080/characters   
+     
+body:      
+```
+{     
+"image": "PersonajeX.jpg",         
+"name": "Personaje X",     
+"age": 55,     
+"height": 230.0,     
+"history": "Personaje X"    
+}     
+```
+### Create a Genre:
+
+Req method: POST   
+localhost:8080/genre
+
+body:     
+```
+{    
+"name":"Terror",     
+"image":"Terror.jpg"      
+}       
+```    
+### Create a Movie:
+    
+Req method: POST     
+localhost:8080/movies     
+**"NOTE: in the character and genre field you must use their IDs"**    
+
+body:    
+
+```
+{      
+"image":"Pelixula X",     
+"title":"peliculaX.jpg",        
+"date_created":"2005-07-25T23:09:01+07:00",      
+"qualification":5,     
+"characters":[      
+  {      
+    "id":1      
+  }     
+],      
+"genre":[      
+  {     
+    "id":1     
+  }      
+]      
+}      
+```
+
+  Swagger: 
 
   http://localhost:8080/swagger-ui.html#/
 
