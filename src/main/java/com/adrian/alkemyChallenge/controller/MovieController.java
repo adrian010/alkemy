@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.adrian.alkemyChallenge.apiError.ApiError;
@@ -29,6 +30,7 @@ import com.adrian.alkemyChallenge.service.IGenreService;
 import com.adrian.alkemyChallenge.service.IMovieService;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -203,4 +205,11 @@ public class MovieController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body(movies);
 	}	
+	
+	@GetMapping(params = "genre")
+	@ResponseBody
+	public List<MovieDTO> findByGenreId(@ApiParam(value = "Busca una Pelicula por ID de Genero", required = true) @RequestParam Long genre){
+		
+		return movieService.findByGenreId(genre);
+	}
 }

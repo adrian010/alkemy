@@ -21,4 +21,6 @@ public interface IMovieService {
 	public List<MovieDTO> findAllByOrderByDateCreatedAsc();
 	
 	public List<MovieDTO> findAllByOrderByDateCreatedDesc();
+	
+	public List<MovieDTO> findByGenreId(Long genreId);
 }

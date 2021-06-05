@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.adrian.alkemyChallenge.dto.CharacterDTO;
-
 import com.adrian.alkemyChallenge.model.Character;
 import com.adrian.alkemyChallenge.service.ICharacterService;
+
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("/characters")
@@ -38,6 +38,7 @@ public class CharacterController {
 	// Read 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> read(@PathVariable(value = "id") Long characterId){
+	//public ResponseEntity<?> read(@PathVariable(value = "id") Long characterId){
 		Optional<Character> oCharacter = characterService.findById(characterId);
 		if(!oCharacter.isPresent()) {
 			return ResponseEntity.notFound().build();
@@ -66,7 +67,7 @@ public class CharacterController {
 	
 	// Delete 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete (@PathVariable(value = "id") Long characterId){
+	public ResponseEntity<?> delete (@ApiParam(value = "ID of person to return", required = true, example = "123") @PathVariable(value = "id") Long characterId){
 				
 		Optional<Character> character = characterService.findById(characterId);
 		
@@ -94,7 +95,7 @@ public class CharacterController {
 	
 	@GetMapping(params = "name")
 	@ResponseBody
-	public List<CharacterDTO> findByName(@RequestParam String name){
+	public List<CharacterDTO> findByName(@ApiParam(value = "Busca un Personaje por Nombre", required = true) @RequestParam(value = "name") String name){
 		
 		
 		return characterService.findByName(name);
@@ -102,14 +103,14 @@ public class CharacterController {
 	
 	@GetMapping(params = "age")
 	@ResponseBody
-	public List<CharacterDTO> findByAge(@RequestParam int age){
+	public List<CharacterDTO> findByAge(@ApiParam(value = "Busca un Personaje por Edad", required = true, example = "123") @RequestParam(value = "age") int age){
 		
 		return characterService.findByAge(age);
 	}
 	
 	@GetMapping(params = "movies")
 	@ResponseBody
-	public List<CharacterDTO> findByMoviesId(@RequestParam Long movies){
+	public List<CharacterDTO> findByMoviesId(@ApiParam(value = "Busca un Personaje por ID de Pelicula", required = true, example = "123") @RequestParam Long movies){
 		
 		return characterService.findByMoviesId(movies);
 	}

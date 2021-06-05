@@ -75,4 +75,15 @@ public class MovieServiceImpl implements IMovieService {
 		return movieList.stream().map(MovieDTO::new).collect(Collectors.toList());
 	}
 	
+	@Override
+	@Transactional
+	public List<MovieDTO> findByGenreId(Long genreId) {
+
+		List<Movie> movieList = movieRepository.findByGenreId(genreId);
+
+		return movieList.stream().map(MovieDTO::new).collect(Collectors.toList());
+
+	}
+	
+	
 }

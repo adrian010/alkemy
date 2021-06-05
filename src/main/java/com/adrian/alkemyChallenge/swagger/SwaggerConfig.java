@@ -18,10 +18,12 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+        		.enableUrlTemplating(true)
         		.useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.adrian.alkemyChallenge.controller"))
                 .paths(PathSelectors.any())
                 .build();
+        
     }    
 }
