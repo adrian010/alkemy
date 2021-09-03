@@ -10,9 +10,8 @@ public class SendgridConfig {
 
 		
 	@Bean
-	public SendGrid getSengrid(){
-		SendGrid sg = new SendGrid(System.getenv("SENDGRIDKEY"));
-		
-		return sg;
+	public SendGrid getSendgrid(){
+
+		return new SendGrid(System.getenv("SENDGRIDKEY"));
 	}
 }
