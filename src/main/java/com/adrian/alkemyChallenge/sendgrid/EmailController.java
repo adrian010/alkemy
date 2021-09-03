@@ -1,5 +1,7 @@
 package com.adrian.alkemyChallenge.sendgrid;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ public class EmailController {
 	private EmailService emailService;
 	 
 	@PostMapping("/sendemail")
-	public ResponseEntity<String> sendemail(@RequestBody EmailRequest emailRequest){
+	public ResponseEntity<String> sendemail(@RequestBody EmailRequest emailRequest) throws IOException{
 		
 		Response response= emailService.sendemail(emailRequest);
 		if(response.getStatusCode()==200||response.getStatusCode()==202) {

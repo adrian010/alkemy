@@ -23,7 +23,8 @@ public class EmailService {
 
 	
 	
-	public Response sendemail(EmailRequest emailRequest) {
+	public Response sendemail(EmailRequest emailRequest) throws IOException{
+		
 		
 		 Mail mail = new Mail(new Email("adriver010@gmail.com"), emailRequest.getSubject(), new Email(emailRequest.getTo()), new Content("text/plain", emailRequest.getBody()));
 		 mail.setReplyTo(new Email("adriver010@gmail.com"));
@@ -40,7 +41,7 @@ public class EmailService {
 		 } catch (IOException ex) {
 		    	
 			  System.out.println(ex.getMessage());
-		      //throw ex;
+		      throw ex;
 		 }		
 		
 		return response;
